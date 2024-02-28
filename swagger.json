@@ -1,0 +1,297 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "version": "1.0.0",
+      "description": "API for Social media",
+      "title": "Social-Media API"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "JWT": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "Authorization",
+          "description": "Enter your JWT token here (e.g., 'Bearer your-token')"
+        }
+      }
+    },
+    "paths": {
+      "/api/signin": {
+        "post": {
+          "tags": ["SINGIN"],
+          "summary": "SINGIN",
+          "description": "User login to get a token",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Incorrect Credentials"
+            }
+          }
+        }
+      },
+      "/api/signup": {
+        "post": {
+          "tags": ["SINGUP"],
+          "summary": "SINGUP",
+          "description": "User can singup",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                        "type": "string"
+                      },
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Incorrect Credentials"
+            }
+          }
+        }
+      },
+      "/api/posts/":{
+        "get": {
+          "tags": ["Posts"],
+          "description": "User will get all the posts posted by him",
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Not Found"
+            }
+          }
+        },
+        "post": {
+            "tags": ["Posts"],
+          "summary": "User can add a new post",
+          "description": "Logged-in users can add a new post",
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "caption": {
+                      "type": "string",
+                      "description": "This is the caption of the post"
+                    },
+                    "image": {
+                      "type": "string",
+                      "format": "binary",
+                      "description": "This is the image file to upload"
+                    }
+                  },
+                  "required": ["caption", "image"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          }
+        }
+        
+      },
+
+      "/api/comments/{id}": {
+        "get": {
+          "tags": ["Comments"],
+          "description": "Get all the comments on a specific post",
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path", 
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "The ID of the post to get comments for"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          }
+        },
+        "post": {
+            "tags": ["Comments"],
+            "summary": "Add a comment to a post",
+            "description": "Add a comment to a specific post",
+            "security": [
+              {
+                "JWT": []
+              }
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The ID of the post to add a comment to"
+              }
+            ],
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "comment": {
+                        "type": "string",
+                        "description": "The comment to add to the post"
+                      }
+                    },
+                    "required": ["comment"]
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "OK"
+              },
+              "400": {
+                "description": "Bad Request"
+              }
+            }
+          }  
+        
+      },
+
+      "/api/likes/{postId}": {
+        "get": {
+          "tags": ["Likes"],
+          "description": "Get posts that the user has liked",
+          "security": [
+            {
+              "JWT": []
+            }
+        ],"parameters": [
+            {
+              "name": "postId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              },
+              "description": "The ID of the post to get all the likes on that post "
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK"
+            },
+            "400": {
+              "description": "Bad Request"
+            }
+          }
+        
+      
+        }
+      
+
+    },
+
+  "/api/likes//toggle/{postId}:":{
+    "post": {
+        "tags": ["Toggle Likes"],
+        "summary": "Add/remove likes to a post",
+        "description": "Add/remove likes to a post",
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID of the post to add /Remove likes  to the post"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }  
+    }
+   }
+}
+
+
+
+
+  
+  
